@@ -11,6 +11,7 @@ export const AIWriter = () => {
   const [suggestion, setSuggestion] = useState("");
   const { toast } = useToast();
   const { t } = useTranslation();
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem('perplexity_api_key') || '');
 
   const handleAnalyze = async () => {
     if (!text.trim()) {
@@ -22,20 +23,55 @@ export const AIWriter = () => {
       return;
     }
 
+    if (!apiKey) {
+      toast({
+        title: "API Key Required",
+        description: "Please enter your Perplexity API key to continue",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsProcessing(true);
     setSuggestion("");
 
     try {
-      // TODO: Replace with actual AI API integration
-      // Simulating API call for now
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setSuggestion("This is a sample AI suggestion. The actual AI integration will be implemented once we connect to an AI service provider.");
+      const response = await fetch('https://api.perplexity.ai/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'llama-3.1-sonar-small-128k-online',
+          messages: [
+            {
+              role: 'system',
+              content: 'You are a helpful writing assistant. Analyze the text and provide constructive suggestions for improvement. Focus on clarity, structure, and impact.'
+            },
+            {
+              role: 'user',
+              content: text
+            }
+          ],
+          temperature: 0.2,
+          max_tokens: 1000,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to get AI response');
+      }
+
+      const data = await response.json();
+      setSuggestion(data.choices[0].message.content);
       
       toast({
         title: t('aiWriter.success'),
         description: t('aiWriter.successDesc'),
       });
     } catch (error) {
+      console.error('AI Analysis error:', error);
       toast({
         title: t('aiWriter.error'),
         description: t('aiWriter.errorDesc'),
@@ -44,6 +80,12 @@ export const AIWriter = () => {
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  const handleApiKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newKey = e.target.value;
+    setApiKey(newKey);
+    localStorage.setItem('perplexity_api_key', newKey);
   };
 
   return (
@@ -58,6 +100,14 @@ export const AIWriter = () => {
       </div>
 
       <div className="space-y-4">
+        <input
+          type="password"
+          placeholder="Enter your Perplexity API key"
+          value={apiKey}
+          onChange={handleApiKeyChange}
+          className="w-full p-2 border rounded"
+        />
+        
         <Textarea
           placeholder={t('aiWriter.placeholder')}
           className="min-h-[200px]"
@@ -77,7 +127,7 @@ export const AIWriter = () => {
         {suggestion && (
           <div className="p-4 bg-muted rounded-lg">
             <h3 className="font-semibold mb-2">{t('aiWriter.suggestionTitle')}</h3>
-            <p className="text-muted-foreground">{suggestion}</p>
+            <p className="text-muted-foreground whitespace-pre-wrap">{suggestion}</p>
           </div>
         )}
       </div>
