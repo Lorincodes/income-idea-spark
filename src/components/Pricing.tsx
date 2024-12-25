@@ -1,52 +1,55 @@
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
-
-const tiers = [
-  {
-    name: "Free Trial",
-    id: "tier-free",
-    priceMonthly: "$0",
-    description: "Perfect for testing out our services",
-    features: [
-      "5 AI generations per day",
-      "Basic writing suggestions",
-      "2 templates",
-      "Standard support",
-    ],
-    buttonText: "Start Free Trial",
-    buttonVariant: "outline" as const,
-  },
-  {
-    name: "Pro",
-    id: "tier-pro",
-    priceMonthly: "$15",
-    description: "Ideal for content creators and professionals",
-    features: [
-      "Unlimited AI generations",
-      "Advanced writing analysis",
-      "All templates",
-      "Priority support",
-      "Custom templates",
-      "API access",
-    ],
-    buttonText: "Subscribe Now",
-    buttonVariant: "default" as const,
-    featured: true,
-  },
-];
+import { useTranslation } from 'react-i18next';
 
 export const Pricing = () => {
+  const { t } = useTranslation();
+
+  const tiers = [
+    {
+      name: t('pricing.free.name'),
+      id: "tier-free",
+      priceMonthly: "$0",
+      description: t('pricing.free.description'),
+      features: [
+        "5 AI generations per day",
+        "Basic writing suggestions",
+        "2 templates",
+        "Standard support",
+      ],
+      buttonText: t('hero.startTrial'),
+      buttonVariant: "outline" as const,
+    },
+    {
+      name: t('pricing.pro.name'),
+      id: "tier-pro",
+      priceMonthly: "$15",
+      description: t('pricing.pro.description'),
+      features: [
+        "Unlimited AI generations",
+        "Advanced writing analysis",
+        "All templates",
+        "Priority support",
+        "Custom templates",
+        "API access",
+      ],
+      buttonText: "Subscribe Now",
+      buttonVariant: "default" as const,
+      featured: true,
+    },
+  ];
+
   return (
     <div className="bg-white py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
-          <h2 className="text-base font-semibold leading-7 text-accent">Pricing</h2>
+          <h2 className="text-base font-semibold leading-7 text-accent">{t('pricing.title')}</h2>
           <p className="mt-2 text-4xl font-bold tracking-tight text-primary sm:text-5xl">
-            Choose your plan
+            {t('pricing.subtitle')}
           </p>
         </div>
         <p className="mx-auto mt-6 max-w-2xl text-center text-lg leading-8 text-secondary">
-          Start with our free trial or upgrade to Pro for unlimited access to all features.
+          {t('pricing.description')}
         </p>
         <div className="isolate mx-auto mt-16 grid max-w-md grid-cols-1 gap-y-8 sm:mt-20 lg:mx-0 lg:max-w-none lg:grid-cols-2 lg:gap-x-8 xl:gap-x-12">
           {tiers.map((tier) => (

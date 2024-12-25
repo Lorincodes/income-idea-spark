@@ -1,25 +1,27 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useTranslation } from 'react-i18next';
 
 export const Hero = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="relative overflow-hidden bg-white">
       <div className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8">
         <div className="text-center">
           <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-6xl">
-            Transform Your Writing with AI
+            {t('hero.title')}
           </h1>
           <p className="mt-6 text-lg leading-8 text-secondary">
-            Create compelling content in seconds with our AI-powered writing assistant.
-            Perfect for bloggers, marketers, and content creators.
+            {t('hero.description')}
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <Button className="group" size="lg">
-              Start Free Trial
+              {t('hero.startTrial')}
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
             <Button variant="outline" size="lg">
-              View Pricing
+              {t('hero.viewPricing')}
             </Button>
           </div>
         </div>
